@@ -6,13 +6,11 @@ module.exports = {
 
         const [count] = await connection('incidents').count();
 
-        console.log(count);
-
         const incidents = await connection('incidents')
             .join('ongs', 'ongs.id', '=', 'incidents.ong_id')
             .limits(5)
             .offset((page - 1) * 5)
-            .select(['incidents.*', 'ongs.name', 'ongs.email', 'ongs.wahtsapp', 'ongs.city', 'ongs.uf']);
+            .select(['incidents.*', 'ongs.name', 'ongs.email', 'ongs.whatsapp', 'ongs.city', 'ongs.uf']);
 
         response.header('X-Total-Count', count['count(*)']);
 
@@ -23,16 +21,16 @@ module.exports = {
         const { title, description, value } = request.body;
         const ong_id = request.headers.authorization;
 
-        const [id] = await connection('incidentes').insert({
-            tutle,
+        const [id] = await connection('incidents').insert({
+            title,
             description,
             value,
             ong_id,
         });
 
-        return  response.json({ id })
-
+        return response.json({ id })
     },
+
     async delete(request, response) {
         const { id } = request.params;
         const ong_id = request.headers.authorization;
@@ -42,12 +40,12 @@ module.exports = {
             .select('ong_id')
             .first();
 
-        if (incident.ong_id != ong_id) {
+        if (incident.ong_id !== ong_id) {
             return response.status(401).json({ error: 'Operation not permitted.'});
         }
 
         await connection('incidents').where('id', id).delete();
 
-        return response.status(205).send();
+        return response.status(204).send();
     }
 };

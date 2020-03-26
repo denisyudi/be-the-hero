@@ -1,14 +1,14 @@
 exports.up = function(knex) {
-    knex.schema.createTable('ongs', function(table) {
+    return knex.schema.createTable("ongs", function(table) {
         table.increments();
 
-        table.string('title').primary();
-        table.string('description').notNullable();
-        table.decimal('value').notNullable();
+        table.string("title").primary();
+        table.string("description").notNullable();
+        table.decimal("value").notNullable();
 
-        table.string('ong_id').notNullable();
+        table.string("ong_id").notNullable();
 
-        table.foreign('ong_id').references('id').inTable('ongs');
+        table.foreign("ong_id").references("id").inTable("ongs");
       });  
 };
 
